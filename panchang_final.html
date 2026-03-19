@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="पञ्चांग">
+<meta name="theme-color" content="#5C0A0A">
+<title>हिंदू पञ्चांग 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --maroon:    #5C0A0A;
+  --deep-red:  #8B1A1A;
+  --saffron:   #E8620A;
+  --gold:      #C8920A;
+  --lt-gold:   #F0C840;
+  --cream:     #FEF6E8;
+  --warm-bg:   #FDF0D8;
+  --card:      #FFFDF8;
+  --blue-cell: #1A3A6B;
+  --sun-col:   #C8250A;
+  --text-dk:   #1E0A0A;
+  --text-md:   #4A2010;
+  --text-lt:   #7A5030;
+  --green:     #1A6B2A;
+  --purple:    #6B1A8B;
+  --border:    rgba(139,26,26,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--warm-bg);
+  font-family: 'Tiro Devanagari Hindi', serif;
+  color: var(--text-dk);
+  min-height: 100vh;
+  padding-bottom: 30px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(160deg, #3A0000 0%, var(--maroon) 40%, #8B3010 100%);
+  padding: 18px 12px 16px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(92,10,10,0.5);
+}
+.header-om { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:30px; opacity:.7; }
+.header-diya { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:28px; opacity:.7; }
+.header h1 { color: var(--lt-gold); font-size:28px; font-weight:400; letter-spacing:2px; text-shadow:0 2px 8px rgba(0,0,0,0.4); }
+.header h2 { font-family:'Cinzel',serif; color:rgba(240,200,64,0.75); font-size:14px; letter-spacing:4px; margin-top:2px; }
+.header-line { margin:7px auto 0; width:100px; height:1px; background:linear-gradient(90deg,transparent,var(--lt-gold),transparent); }
+
+/* ── SAMVAT BAR ── */
+.samvat-bar {
+  background: linear-gradient(135deg, #1A3A6B, #0D2450);
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 7px 10px;
+  border-bottom: 2px solid var(--gold);
+}
+.samvat-item { text-align:center; }
+.samvat-label { font-family:'Cinzel',serif; font-size:12px; color:rgba(255,255,255,0.55); letter-spacing:1px; display:block; }
+.samvat-value { font-size:15px; color:#F0C840; display:block; margin-top:1px; }
+
+/* ── TODAY BANNER ── */
+.today-banner {
+  background: linear-gradient(135deg, var(--saffron), #C04800);
+  color:white; text-align:center; padding:8px 12px;
+  font-size:15px; letter-spacing:.5px;
+}
+.festival-banner {
+  background: linear-gradient(135deg, var(--purple), #4A0068);
+  color:white; text-align:center; padding:7px 12px;
+  font-size:15px; display:none;
+}
+
+/* ── NAV ── */
+.container { max-width:480px; margin:0 auto; padding:0 8px; }
+.cal-nav-row {
+  display:flex; align-items:center; justify-content:space-between;
+  background: linear-gradient(135deg, var(--maroon), var(--deep-red));
+  padding:10px 12px; margin-top:10px; border-radius:14px 14px 0 0;
+  box-shadow:0 2px 10px rgba(92,10,10,0.3);
+}
+.nav-btn {
+  background:rgba(255,255,255,0.15); border:1.5px solid rgba(240,200,64,0.5);
+  color:var(--lt-gold); width:36px; height:36px; border-radius:50%;
+  font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.nav-btn:active { background:rgba(255,255,255,0.3); }
+.nav-center { text-align:center; }
+.nav-month-hi { color:var(--lt-gold); font-size:22px; display:block; }
+.nav-month-en { font-family:'Cinzel',serif; color:rgba(240,200,64,0.65); font-size:13px; letter-spacing:3px; display:block; margin-top:1px; }
+
+/* ── TODAY BTN ── */
+.today-btn-row { text-align:center; margin:8px 0 4px; }
+.today-btn {
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  color:white; border:none; border-radius:20px; padding:7px 22px;
+  font-family:'Tiro Devanagari Hindi',serif; font-size:17px; cursor:pointer;
+  box-shadow:0 3px 12px rgba(232,98,10,0.35);
+}
+
+/* ── CALENDAR GRID ── */
+.cal-wrap {
+  background:var(--card);
+  border-radius:0 0 14px 14px;
+  border:1px solid var(--border);
+  border-top:none;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(92,10,10,0.1);
+}
+
+.weekday-header {
+  display:grid; grid-template-columns:repeat(7,1fr);
+  background:linear-gradient(135deg,#8B1A1A,#6B0A0A);
+}
+.weekday-header span {
+  text-align:center; padding:6px 2px;
+  font-family:'Cinzel',serif; font-size:13px; font-weight:700;
+  color:rgba(240,200,64,0.85); letter-spacing:.5px;
+}
+.weekday-header span:first-child { color:#FF8080; }
+
+.cal-grid {
+  display:grid; grid-template-columns:repeat(7,1fr);
+  gap:1px; background:rgba(139,26,26,0.1);
+}
+
+/* ── DAY CELL ── */
+.day-cell {
+  background:var(--card);
+  padding:5px 3px 6px;
+  cursor:pointer;
+  position:relative;
+  min-height:90px;
+  display:flex; flex-direction:column; align-items:center;
+  transition:background .15s;
+}
+.day-cell.empty { background:rgba(255,248,236,0.4); cursor:default; min-height:90px; }
+.day-cell:not(.empty):active { background:rgba(232,98,10,0.08); }
+
+.cell-date {
+  font-size:28px; font-weight:700; line-height:1;
+  color:var(--text-dk); margin-top:1px;
+  font-family:'Tiro Devanagari Hindi',serif;
+}
+.day-cell.sunday .cell-date { color:#B80000; }
+.day-cell.today .cell-date {
+  background:linear-gradient(135deg,var(--saffron),#C04800);
+  color:white; border-radius:50%; width:26px; height:26px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; box-shadow:0 2px 8px rgba(232,98,10,0.5);
+}
+.day-cell.selected { background:rgba(200,146,10,0.1); outline:2px solid var(--gold); outline-offset:-1px; }
+
+.cell-tithi {
+  font-size:11px; color:var(--blue-cell); line-height:1.1;
+  text-align:center; margin-top:2px; width:100%;
+  font-family:'Tiro Devanagari Hindi',serif;
+}
+.cell-tithi-time { font-size:10px; color:var(--text-lt); font-family:'Crimson Pro',serif; }
+
+.cell-nak {
+  font-size:11px; color:#1A5A2A; line-height:1;
+  text-align:center; margin-top:1px; width:100%;
+  font-family:'Tiro Devanagari Hindi',serif;
+}
+
+.cell-sunrise {
+  font-size:10px; color:#8B4500; line-height:1;
+  text-align:center; margin-top:1px;
+  font-family:'Crimson Pro',serif; font-style:italic;
+}
+
+.cell-fest {
+  font-size:11px; color:var(--purple); line-height:1.15;
+  text-align:center; margin-top:2px; width:100%;
+  font-family:'Tiro Devanagari Hindi',serif;
+  font-weight:600; word-break:break-word;
+}
+.cell-fest.major { color:var(--maroon); }
+.cell-fest.navratri-fest { color:#B85000; }
+
+/* special day backgrounds */
+.day-cell.amavasya-day { background:#FFF0F0; }
+.day-cell.purnima-day { background:#FFFFF0; }
+.day-cell.festival-day { background:#FFF5FF; }
+.day-cell.navratri-day { background:#FFF8F0; }
+.day-cell.sunday { background:#FFF8F8; }
+
+/* ── LEGEND ── */
+.legend {
+  display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+  padding:8px 8px 10px; background:var(--card);
+  border:1px solid var(--border); border-top:none;
+  border-radius:0 0 14px 14px; margin-bottom:12px;
+}
+.leg-item { display:flex; align-items:center; gap:3px; font-size:13px; color:var(--text-md); }
+.leg-dot { width:8px; height:8px; border-radius:50%; }
+
+/* ── DETAIL CARD ── */
+.detail-card {
+  background:var(--card); border-radius:16px;
+  border:1px solid var(--border);
+  box-shadow:0 4px 20px rgba(92,10,10,0.1);
+  margin-top:12px; overflow:hidden;
+}
+
+.detail-header {
+  background:linear-gradient(135deg,#3A0000,var(--maroon));
+  padding:14px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.dh-left {}
+.dh-date-hi { color:var(--lt-gold); font-size:20px; display:block; }
+.dh-date-en { font-family:'Cinzel',serif; color:rgba(240,200,64,0.65); font-size:14px; letter-spacing:2px; margin-top:2px; display:block; }
+.dh-today-badge {
+  background:rgba(232,98,10,0.3); border:1px solid rgba(232,98,10,0.6);
+  color:#FFB060; font-family:'Cinzel',serif; font-size:13px; letter-spacing:2px;
+  padding:3px 8px; border-radius:10px;
+}
+
+/* ── DETAIL PANCHANG GRID ── */
+.detail-panch {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:8px; padding:12px;
+}
+.panch-box {
+  background:var(--warm-bg); border-radius:10px;
+  padding:12px 12px 10px;
+  border-left:3px solid var(--gold);
+}
+.panch-box.highlight { border-left-color:var(--saffron); }
+.panch-box.full { grid-column:1/-1; }
+.pb-label-en { font-family:'Cinzel',serif; font-size:12px; letter-spacing:2px; color:var(--text-lt); display:block; }
+.pb-label-hi { font-size:15px; color:var(--text-md); display:block; margin-bottom:3px; }
+.pb-value-hi { font-size:22px; color:var(--text-dk); display:block; line-height:1.2; }
+.pb-value-sub { font-family:'Crimson Pro',serif; font-size:16px; color:var(--text-md); font-style:italic; display:block; }
+.pb-time { font-family:'Crimson Pro',serif; font-size:15px; color:var(--saffron); font-weight:600; display:block; margin-top:2px; }
+
+/* ── SUN ROW ── */
+.sun-row { display:flex; gap:8px; padding:0 12px 12px; }
+.sun-box {
+  flex:1; border-radius:12px; padding:14px; text-align:center;
+}
+.sun-box.rise { background:rgba(255,160,0,0.1); border:1.5px solid rgba(255,160,0,0.3); }
+.sun-box.set  { background:rgba(139,26,26,0.08); border:1.5px solid rgba(139,26,26,0.2); }
+.sun-icon { font-size:26px; display:block; }
+.sun-lbl { font-size:16px; color:var(--text-md); display:block; margin-top:3px; }
+.sun-time { font-family:'Cinzel',serif; font-size:19px; font-weight:700; color:var(--text-dk); display:block; margin-top:3px; }
+
+/* ── FESTIVAL BLOCK ── */
+.fest-block {
+  margin:0 12px 12px;
+  border-radius:12px; padding:16px 16px; overflow:hidden;
+}
+.fest-block.major-fest { background:linear-gradient(135deg,rgba(107,26,162,0.08),rgba(74,0,104,0.04)); border:1.5px solid rgba(107,26,162,0.3); }
+.fest-block.navratri-block { background:linear-gradient(135deg,rgba(232,98,10,0.08),rgba(200,146,10,0.04)); border:1.5px solid rgba(232,98,10,0.3); }
+.fest-icon-big { font-size:40px; float:right; margin-left:10px; }
+.fest-title-hi { font-size:24px; color:var(--purple); }
+.fest-block.navratri-block .fest-title-hi { color:var(--saffron); }
+.fest-title-en { font-family:'Cinzel',serif; font-size:14px; letter-spacing:2px; color:rgba(107,26,162,0.6); margin-top:2px; display:block; }
+.fest-devi { font-size:18px; color:var(--maroon); margin-top:5px; display:block; }
+.fest-color-tag { display:inline-block; font-family:'Crimson Pro',serif; font-size:16px; color:var(--text-md); margin-top:5px; padding:2px 10px; background:rgba(255,255,255,0.7); border-radius:20px; border:1px solid rgba(0,0,0,0.08); }
+.fest-desc { font-size:15px; color:var(--text-md); margin-top:7px; line-height:1.5; clear:both; }
+
+/* ── AMAVASYA ALERT ── */
+.ama-alert {
+  margin:0 12px 12px; border-radius:12px; padding:12px 14px;
+  display:flex; align-items:center; gap:12px;
+}
+.ama-alert.yes { background:rgba(183,28,28,0.08); border:1.5px solid rgba(183,28,28,0.25); }
+.ama-alert.no  { background:rgba(46,107,42,0.06); border:1.5px solid rgba(46,107,42,0.2); }
+.ama-icon { font-size:32px; }
+.ama-hi { font-size:18px; }
+.ama-alert.yes .ama-hi { color:#B71C1C; }
+.ama-alert.no  .ama-hi { color:#1A6B2A; }
+.ama-en { font-family:'Crimson Pro',serif; font-size:16px; color:var(--text-md); }
+
+/* ── MUHURAT ── */
+.muh-section { margin:0 12px 12px; }
+.muh-title { font-size:17px; color:var(--maroon); margin-bottom:7px; display:flex; align-items:center; gap:5px; }
+.muh-card { background:rgba(46,107,42,0.06); border:1.5px solid rgba(46,107,42,0.2); border-radius:12px; padding:10px 12px; }
+.muh-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(46,107,42,0.08); }
+.muh-row:last-child { border-bottom:none; }
+.muh-name-hi { font-size:17px; color:var(--text-dk); }
+.muh-name-en { font-family:'Crimson Pro',serif; font-size:15px; color:var(--text-lt); font-style:italic; }
+.muh-time { font-family:'Cinzel',serif; font-size:16px; color:#1A6B2A; font-weight:600; }
+
+/* ── INAUSPICIOUS ── */
+.inaus-section { margin:0 12px 14px; }
+.inaus-title { font-size:17px; color:#B71C1C; margin-bottom:7px; display:flex; align-items:center; gap:5px; }
+.inaus-card { background:rgba(183,28,28,0.05); border:1.5px solid rgba(183,28,28,0.18); border-radius:12px; padding:10px 12px; }
+.inaus-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(183,28,28,0.07); }
+.inaus-row:last-child { border-bottom:none; }
+.inaus-name { font-size:17px; color:var(--text-dk); }
+.inaus-time { font-family:'Cinzel',serif; font-size:16px; color:#B71C1C; font-weight:600; }
+
+.footer {
+  text-align:center; padding:16px 12px 8px;
+  font-size:15px; color:var(--text-lt); opacity:.7;
+  font-family:'Crimson Pro',serif;
+}
+
+/* PWA install banner */
+.pwa-bar {
+  display:none; position:fixed; bottom:16px; left:50%;
+  transform:translateX(-50%); width:90%; max-width:360px;
+  background:linear-gradient(135deg,var(--maroon),#8B3010);
+  border-radius:14px; padding:12px 16px;
+  box-shadow:0 6px 24px rgba(0,0,0,0.3);
+  z-index:999; border:1px solid rgba(240,200,64,0.35);
+  align-items:center; gap:10px;
+}
+.pwa-bar.show { display:flex; }
+.pwa-bar-text { flex:1; }
+.pwa-bar-t1 { font-size:15px; color:var(--lt-gold); display:block; }
+.pwa-bar-t2 { font-family:'Crimson Pro',serif; font-size:15px; color:rgba(255,255,255,0.75); display:block; margin-top:2px; }
+.pwa-bar-x { font-size:24px; color:rgba(255,255,255,0.5); cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-om">🕉</span>
+  <h1>हिंदू पञ्चांग</h1>
+  <h2>HINDU PANCHANG CALENDAR</h2>
+  <div class="header-line"></div>
+  <span class="header-diya">🪔</span>
+</div>
+
+<div class="samvat-bar" id="samvatBar">
+  <div class="samvat-item"><span class="samvat-label">विक्रम सम्वत्</span><span class="samvat-value" id="svVikram">—</span></div>
+  <div class="samvat-item"><span class="samvat-label">शक सम्वत्</span><span class="samvat-value" id="svShaka">—</span></div>
+  <div class="samvat-item"><span class="samvat-label">हिन्दू मास</span><span class="samvat-value" id="svMas">—</span></div>
+  <div class="samvat-item"><span class="samvat-label">पक्ष</span><span class="samvat-value" id="svPaksha">—</span></div>
+</div>
+
+<div id="todayBanner" class="today-banner"></div>
+<div id="festivalBanner" class="festival-banner"></div>
+
+<div class="container">
+  <div class="today-btn-row">
+    <button class="today-btn" onclick="goToToday()">🏠 आज / Today</button>
+  </div>
+
+  <div class="cal-nav-row">
+    <button class="nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+    <div class="nav-center">
+      <span class="nav-month-hi" id="monthHindi"></span>
+      <span class="nav-month-en" id="monthEnglish"></span>
+    </div>
+    <button class="nav-btn" onclick="changeMonth(1)">&#8250;</button>
+  </div>
+
+  <div class="cal-wrap">
+    <div class="weekday-header">
+      <span>रवि</span><span>सोम</span><span>मंगल</span><span>बुध</span><span>गुरु</span><span>शुक्र</span><span>शनि</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#E8620A"></div>आज</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#B85000"></div>नवरात्रि</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#6B1A8B"></div>त्योहार</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#B80000"></div>अमावस्या</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#C8920A;border:1px solid #ccc"></div>पूर्णिमा</div>
+  </div>
+
+  <div id="detailCard" class="detail-card">
+    <div style="padding:30px;text-align:center;font-size:19px;color:var(--text-lt)">🙏 तिथि चुनें / Select a date</div>
+  </div>
+
+  <div class="footer">🕉 ॐ नमः शिवाय 🕉<br>पञ्चांग अनुमानित है। सटीक मुहूर्त हेतु स्थानीय पंडित से परामर्श लें।<br>Panchang is approximate. Consult a local pandit for exact timings.</div>
+</div>
+
+<!-- PWA install bar -->
+<div class="pwa-bar" id="pwaBar">
+  <span style="font-size:32px">📱</span>
+  <div class="pwa-bar-text">
+    <span class="pwa-bar-t1">होम स्क्रीन पर जोड़ें</span>
+    <span class="pwa-bar-t2">Share ⬆️ → Add to Home Screen</span>
+  </div>
+  <span class="pwa-bar-x" onclick="document.getElementById('pwaBar').classList.remove('show')">✕</span>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════
+function pad2(n) { return n < 10 ? '0'+n : ''+n; }
+
+function daysInMonth(y, m) {
+  var days = [31,28,31,30,31,30,31,31,30,31,30,31];
+  if (m===1 && ((y%4===0&&y%100!==0)||(y%400===0))) return 29;
+  return days[m];
+}
+
+function firstDayOfMonth(y, m) {
+  var mm = m+1, yy = y;
+  if (mm < 3) { mm += 12; yy--; }
+  var k = yy%100, j = Math.floor(yy/100);
+  var h = (1 + Math.floor(13*(mm+1)/5) + k + Math.floor(k/4) + Math.floor(j/4) - 2*j) % 7;
+  if (h < 0) h += 7;
+  return (h+6)%7;
+}
+
+function makeJan1Ms(y) {
+  // Get Jan 1 of year y using only no-arg date tricks
+  var d = new Date();
+  // Use UTC to be safe
+  return Date.UTC(y, 0, 1);
+}
+
+function getDOY(y, m, d) {
+  // Day of year using simple month sum
+  var dim = [0,31,59,90,120,151,181,212,243,273,304,334];
+  var leap = (m > 1 && ((y%4===0&&y%100!==0)||(y%400===0))) ? 1 : 0;
+  return dim[m] + d + leap;
+}
+
+// ══════════════════════════════════════
+// FESTIVALS
+// ══════════════════════════════════════
+var FESTIVALS = {
+"2024-01-14":{ hi:"मकर संक्रांति", en:"Makar Sankranti", icon:"🌞", desc:"सूर्य मकर राशि में प्रवेश। तिल-गुड़ पर्व।", type:"major" },
+"2024-02-14":{ hi:"वसंत पंचमी", en:"Vasant Panchami", icon:"🌼", desc:"माँ सरस्वती पूजा।", type:"major" },
+"2024-03-08":{ hi:"महाशिवरात्रि", en:"Maha Shivratri", icon:"🔱", desc:"भगवान शिव की महान रात्रि।", type:"major" },
+"2024-03-25":{ hi:"होलिका दहन", en:"Holika Dahan", icon:"🔥", desc:"होलिका दहन।", type:"major" },
+"2024-03-26":{ hi:"होली", en:"Holi", icon:"🎨", desc:"रंगों का महापर्व!", type:"major" },
+"2024-04-09":{ hi:"चैत्र नवरात्रि १", en:"Chaitra Navratri Day 1", icon:"🪔", type:"navratri", navratriDay:1, devi:"माँ शैलपुत्री", color:"🩶 Grey" },
+"2024-04-10":{ hi:"नवरात्रि २", en:"Navratri Day 2", icon:"🪔", type:"navratri", navratriDay:2, devi:"माँ ब्रह्मचारिणी", color:"🤍 White" },
+"2024-04-11":{ hi:"नवरात्रि ३", en:"Navratri Day 3", icon:"🪔", type:"navratri", navratriDay:3, devi:"माँ चंद्रघंटा", color:"🩵 Blue" },
+"2024-04-12":{ hi:"नवरात्रि ४", en:"Navratri Day 4", icon:"🪔", type:"navratri", navratriDay:4, devi:"माँ कूष्माण्डा", color:"🟡 Yellow" },
+"2024-04-13":{ hi:"नवरात्रि ५", en:"Navratri Day 5", icon:"🪔", type:"navratri", navratriDay:5, devi:"माँ स्कंदमाता", color:"🟢 Green" },
+"2024-04-14":{ hi:"नवरात्रि ६", en:"Navratri Day 6", icon:"🪔", type:"navratri", navratriDay:6, devi:"माँ कात्यायनी", color:"🩶 Grey" },
+"2024-04-15":{ hi:"नवरात्रि ७", en:"Navratri Day 7", icon:"🪔", type:"navratri", navratriDay:7, devi:"माँ कालरात्रि", color:"🔵 Blue" },
+"2024-04-16":{ hi:"महाअष्टमी", en:"Maha Ashtami", icon:"⚔️", type:"navratri", navratriDay:8, devi:"माँ महागौरी", color:"🩷 Pink" },
+"2024-04-17":{ hi:"राम नवमी", en:"Ram Navami", icon:"🏹", type:"navratri", navratriDay:9, devi:"माँ सिद्धिदात्री", color:"🟣 Purple" },
+"2024-04-23":{ hi:"हनुमान जयंती", en:"Hanuman Jayanti", icon:"🐒", type:"major" },
+"2024-05-23":{ hi:"बुद्ध पूर्णिमा", en:"Buddha Purnima", icon:"☸️", type:"major" },
+"2024-07-17":{ hi:"गुरु पूर्णिमा", en:"Guru Purnima", icon:"🙏", type:"major" },
+"2024-08-07":{ hi:"नाग पंचमी", en:"Nag Panchami", icon:"🐍", type:"major" },
+"2024-08-19":{ hi:"रक्षाबंधन", en:"Raksha Bandhan", icon:"🪢", type:"major" },
+"2024-08-26":{ hi:"जन्माष्टमी", en:"Janmashtami", icon:"🦚", type:"major" },
+"2024-09-07":{ hi:"गणेश चतुर्थी", en:"Ganesh Chaturthi", icon:"🐘", type:"major" },
+"2024-10-02":{ hi:"शारदीय नवरात्रि १", en:"Shardiya Navratri Day 1", icon:"🪔", type:"navratri", navratriDay:1, devi:"माँ शैलपुत्री", color:"🟠 Orange" },
+"2024-10-03":{ hi:"नवरात्रि २", en:"Navratri Day 2", icon:"🪔", type:"navratri", navratriDay:2, devi:"माँ ब्रह्मचारिणी", color:"🤍 White" },
+"2024-10-04":{ hi:"नवरात्रि ३", en:"Navratri Day 3", icon:"🪔", type:"navratri", navratriDay:3, devi:"माँ चंद्रघंटा", color:"🔴 Red" },
+"2024-10-05":{ hi:"नवरात्रि ४", en:"Navratri Day 4", icon:"🪔", type:"navratri", navratriDay:4, devi:"माँ कूष्माण्डा", color:"💙 Blue" },
+"2024-10-06":{ hi:"नवरात्रि ५", en:"Navratri Day 5", icon:"🪔", type:"navratri", navratriDay:5, devi:"माँ स्कंदमाता", color:"💛 Yellow" },
+"2024-10-07":{ hi:"नवरात्रि ६", en:"Navratri Day 6", icon:"🪔", type:"navratri", navratriDay:6, devi:"माँ कात्यायनी", color:"🟢 Green" },
+"2024-10-08":{ hi:"नवरात्रि ७", en:"Navratri Day 7", icon:"🪔", type:"navratri", navratriDay:7, devi:"माँ कालरात्रि", color:"🩶 Grey" },
+"2024-10-09":{ hi:"दुर्गा अष्टमी", en:"Durga Ashtami", icon:"⚔️", type:"navratri", navratriDay:8, devi:"माँ महागौरी", color:"🟣 Purple" },
+"2024-10-10":{ hi:"महानवमी", en:"Maha Navami", icon:"🏆", type:"navratri", navratriDay:9, devi:"माँ सिद्धिदात्री", color:"🟡 Yellow" },
+"2024-10-12":{ hi:"दशहरा", en:"Dussehra", icon:"🏹", type:"major" },
+"2024-10-20":{ hi:"करवा चौथ", en:"Karva Chauth", icon:"🌙", type:"major" },
+"2024-10-29":{ hi:"धनतेरस", en:"Dhanteras", icon:"💰", type:"major" },
+"2024-10-31":{ hi:"दीपावली", en:"Diwali", icon:"🪔", desc:"रोशनी का महापर्व!", type:"major" },
+"2024-11-01":{ hi:"गोवर्धन पूजा", en:"Govardhan Puja", icon:"🐄", type:"major" },
+"2024-11-02":{ hi:"भाई दूज", en:"Bhai Dooj", icon:"👫", type:"major" },
+"2024-11-15":{ hi:"देव दीपावली", en:"Dev Diwali", icon:"✨", type:"major" },
+"2025-01-13":{ hi:"लोहड़ी", en:"Lohri", icon:"🔥", type:"medium" },
+"2025-01-14":{ hi:"मकर संक्रांति", en:"Makar Sankranti", icon:"🌞", type:"major" },
+"2025-02-02":{ hi:"वसंत पंचमी", en:"Vasant Panchami", icon:"🌼", type:"major" },
+"2025-02-26":{ hi:"महाशिवरात्रि", en:"Maha Shivratri", icon:"🔱", type:"major" },
+"2025-03-13":{ hi:"होलिका दहन", en:"Holika Dahan", icon:"🔥", type:"major" },
+"2025-03-14":{ hi:"होली", en:"Holi", icon:"🎨", type:"major" },
+"2025-03-30":{ hi:"चैत्र नवरात्रि १", en:"Chaitra Navratri Day 1", icon:"🪔", type:"navratri", navratriDay:1, devi:"माँ शैलपुत्री", color:"🟠 Orange" },
+"2025-03-31":{ hi:"नवरात्रि २", en:"Navratri Day 2", icon:"🪔", type:"navratri", navratriDay:2, devi:"माँ ब्रह्मचारिणी", color:"🤍 White" },
+"2025-04-01":{ hi:"नवरात्रि ३", en:"Navratri Day 3", icon:"🪔", type:"navratri", navratriDay:3, devi:"माँ चंद्रघंटा", color:"🔴 Red" },
+"2025-04-02":{ hi:"नवरात्रि ४", en:"Navratri Day 4", icon:"🪔", type:"navratri", navratriDay:4, devi:"माँ कूष्माण्डा", color:"💙 Blue" },
+"2025-04-03":{ hi:"नवरात्रि ५", en:"Navratri Day 5", icon:"🪔", type:"navratri", navratriDay:5, devi:"माँ स्कंदमाता", color:"💛 Yellow" },
+"2025-04-04":{ hi:"नवरात्रि ६", en:"Navratri Day 6", icon:"🪔", type:"navratri", navratriDay:6, devi:"माँ कात्यायनी", color:"🟢 Green" },
+"2025-04-05":{ hi:"नवरात्रि ७", en:"Navratri Day 7", icon:"🪔", type:"navratri", navratriDay:7, devi:"माँ कालरात्रि", color:"🩶 Grey" },
+"2025-04-06":{ hi:"दुर्गा अष्टमी", en:"Durga Ashtami", icon:"⚔️", type:"navratri", navratriDay:8, devi:"माँ महागौरी", color:"🟣 Purple" },
+"2025-04-07":{ hi:"राम नवमी", en:"Ram Navami", icon:"🏹", type:"navratri", navratriDay:9, devi:"माँ सिद्धिदात्री", color:"🟡 Yellow" },
+"2025-04-12":{ hi:"हनुमान जयंती", en:"Hanuman Jayanti", icon:"🐒", type:"major" },
+"2025-05-12":{ hi:"बुद्ध पूर्णिमा", en:"Buddha Purnima", icon:"☸️", type:"major" },
+"2025-07-10":{ hi:"गुरु पूर्णिमा", en:"Guru Purnima", icon:"🙏", type:"major" },
+"2025-07-26":{ hi:"नाग पंचमी", en:"Nag Panchami", icon:"🐍", type:"major" },
+"2025-08-09":{ hi:"रक्षाबंधन", en:"Raksha Bandhan", icon:"🪢", type:"major" },
+"2025-08-16":{ hi:"जन्माष्टमी", en:"Janmashtami", icon:"🦚", type:"major" },
+"2025-08-27":{ hi:"गणेश चतुर्थी", en:"Ganesh Chaturthi", icon:"🐘", type:"major" },
+"2025-10-02":{ hi:"शारदीय नवरात्रि १", en:"Shardiya Navratri Day 1", icon:"🪔", type:"navratri", navratriDay:1, devi:"माँ शैलपुत्री", color:"🟡 Yellow" },
+"2025-10-03":{ hi:"नवरात्रि २", en:"Navratri Day 2", icon:"🪔", type:"navratri", navratriDay:2, devi:"माँ ब्रह्मचारिणी", color:"🟢 Green" },
+"2025-10-04":{ hi:"नवरात्रि ३", en:"Navratri Day 3", icon:"🪔", type:"navratri", navratriDay:3, devi:"माँ चंद्रघंटा", color:"🩶 Grey" },
+"2025-10-05":{ hi:"नवरात्रि ४", en:"Navratri Day 4", icon:"🪔", type:"navratri", navratriDay:4, devi:"माँ कूष्माण्डा", color:"🟠 Orange" },
+"2025-10-06":{ hi:"नवरात्रि ५", en:"Navratri Day 5", icon:"🪔", type:"navratri", navratriDay:5, devi:"माँ स्कंदमाता", color:"🤍 White" },
+"2025-10-07":{ hi:"नवरात्रि ६", en:"Navratri Day 6", icon:"🪔", type:"navratri", navratriDay:6, devi:"माँ कात्यायनी", color:"🔴 Red" },
+"2025-10-08":{ hi:"नवरात्रि ७", en:"Navratri Day 7", icon:"🪔", type:"navratri", navratriDay:7, devi:"माँ कालरात्रि", color:"💙 Blue" },
+"2025-10-09":{ hi:"दुर्गा अष्टमी", en:"Durga Ashtami", icon:"⚔️", type:"navratri", navratriDay:8, devi:"माँ महागौरी", color:"🟣 Purple" },
+"2025-10-10":{ hi:"महानवमी", en:"Maha Navami", icon:"🏆", type:"navratri", navratriDay:9, devi:"माँ सिद्धिदात्री", color:"🩵 Sky Blue" },
+"2025-10-13":{ hi:"दशहरा", en:"Dussehra", icon:"🏹", type:"major" },
+"2025-10-20":{ hi:"धनतेरस", en:"Dhanteras", icon:"💰", type:"major" },
+"2025-10-22":{ hi:"दीपावली", en:"Diwali", icon:"🪔", desc:"रोशनी का महापर्व!", type:"major" },
+"2025-10-23":{ hi:"गोवर्धन पूजा", en:"Govardhan Puja", icon:"🐄", type:"major" },
+"2025-10-24":{ hi:"भाई दूज", en:"Bhai Dooj", icon:"👫", type:"major" },
+"2025-11-05":{ hi:"कार्तिक पूर्णिमा", en:"Kartik Purnima", icon:"✨", type:"major" },
+"2026-01-14":{ hi:"मकर संक्रांति", en:"Makar Sankranti", icon:"🌞", desc:"तिल-गुड़ पर्व।", type:"major" },
+"2026-01-23":{ hi:"वसंत पंचमी", en:"Vasant Panchami", icon:"🌼", desc:"माँ सरस्वती पूजा।", type:"major" },
+"2026-02-15":{ hi:"महाशिवरात्रि", en:"Maha Shivratri", icon:"🔱", desc:"भगवान शिव की रात्रि।", type:"major" },
+"2026-03-02":{ hi:"होलिका दहन", en:"Holika Dahan", icon:"🔥", desc:"होलिका दहन।", type:"major" },
+"2026-03-03":{ hi:"होली", en:"Holi", icon:"🎨", desc:"रंगों का महापर्व!", type:"major" },
+"2026-03-19":{ hi:"चैत्र नवरात्रि १", en:"Chaitra Navratri Day 1", icon:"🪔", desc:"घटस्थापना। चैत्र नवरात्रि प्रारंभ।", type:"navratri", navratriDay:1, devi:"माँ शैलपुत्री", color:"🟡 Yellow" },
+"2026-03-20":{ hi:"नवरात्रि २", en:"Navratri Day 2", icon:"🪔", type:"navratri", navratriDay:2, devi:"माँ ब्रह्मचारिणी", color:"🟢 Green" },
+"2026-03-21":{ hi:"नवरात्रि ३", en:"Navratri Day 3", icon:"🪔", type:"navratri", navratriDay:3, devi:"माँ चंद्रघंटा", color:"🩶 Grey" },
+"2026-03-22":{ hi:"नवरात्रि ४", en:"Navratri Day 4", icon:"🪔", type:"navratri", navratriDay:4, devi:"माँ कूष्माण्डा", color:"🟠 Orange" },
+"2026-03-23":{ hi:"नवरात्रि ५", en:"Navratri Day 5", icon:"🪔", type:"navratri", navratriDay:5, devi:"माँ स्कंदमाता", color:"🤍 White" },
+"2026-03-24":{ hi:"नवरात्रि ६", en:"Navratri Day 6", icon:"🪔", type:"navratri", navratriDay:6, devi:"माँ कात्यायनी", color:"🔴 Red" },
+"2026-03-25":{ hi:"नवरात्रि ७", en:"Navratri Day 7", icon:"🪔", type:"navratri", navratriDay:7, devi:"माँ कालरात्रि", color:"💙 Blue" },
+"2026-03-26":{ hi:"दुर्गा अष्टमी", en:"Durga Ashtami", icon:"⚔️", desc:"माँ महागौरी। कन्या पूजन।", type:"navratri", navratriDay:8, devi:"माँ महागौरी", color:"🟣 Purple" },
+"2026-03-27":{ hi:"राम नवमी", en:"Ram Navami", icon:"🏹", desc:"श्री राम जन्मोत्सव।", type:"navratri", navratriDay:9, devi:"माँ सिद्धिदात्री", color:"🩵 Sky Blue" },
+"2026-04-01":{ hi:"हनुमान जयंती", en:"Hanuman Jayanti", icon:"🐒", desc:"हनुमान जी का जन्मोत्सव।", type:"major" },
+"2026-05-01":{ hi:"बुद्ध पूर्णिमा", en:"Buddha Purnima", icon:"☸️", type:"major" },
+"2026-06-28":{ hi:"गुरु पूर्णिमा", en:"Guru Purnima", icon:"🙏", type:"major" },
+"2026-07-15":{ hi:"नाग पंचमी", en:"Nag Panchami", icon:"🐍", type:"major" },
+"2026-07-29":{ hi:"रक्षाबंधन", en:"Raksha Bandhan", icon:"🪢", type:"major" },
+"2026-08-05":{ hi:"जन्माष्टमी", en:"Janmashtami", icon:"🦚", type:"major" },
+"2026-08-17":{ hi:"गणेश चतुर्थी", en:"Ganesh Chaturthi", icon:"🐘", type:"major" },
+"2026-09-22":{ hi:"शारदीय नवरात्रि १", en:"Shardiya Navratri Day 1", icon:"🪔", type:"navratri", navratriDay:1, devi:"माँ शैलपुत्री", color:"🟡 Yellow" },
+"2026-09-23":{ hi:"नवरात्रि २", en:"Navratri Day 2", icon:"🪔", type:"navratri", navratriDay:2, devi:"माँ ब्रह्मचारिणी", color:"🟢 Green" },
+"2026-09-24":{ hi:"नवरात्रि ३", en:"Navratri Day 3", icon:"🪔", type:"navratri", navratriDay:3, devi:"माँ चंद्रघंटा", color:"🩶 Grey" },
+"2026-09-25":{ hi:"नवरात्रि ४", en:"Navratri Day 4", icon:"🪔", type:"navratri", navratriDay:4, devi:"माँ कूष्माण्डा", color:"🟠 Orange" },
+"2026-09-26":{ hi:"नवरात्रि ५", en:"Navratri Day 5", icon:"🪔", type:"navratri", navratriDay:5, devi:"माँ स्कंदमाता", color:"🤍 White" },
+"2026-09-27":{ hi:"नवरात्रि ६", en:"Navratri Day 6", icon:"🪔", type:"navratri", navratriDay:6, devi:"माँ कात्यायनी", color:"🔴 Red" },
+"2026-09-28":{ hi:"नवरात्रि ७", en:"Navratri Day 7", icon:"🪔", type:"navratri", navratriDay:7, devi:"माँ कालरात्रि", color:"💙 Blue" },
+"2026-09-29":{ hi:"दुर्गा अष्टमी", en:"Durga Ashtami", icon:"⚔️", type:"navratri", navratriDay:8, devi:"माँ महागौरी", color:"🟣 Purple" },
+"2026-09-30":{ hi:"महानवमी", en:"Maha Navami", icon:"🏆", type:"navratri", navratriDay:9, devi:"माँ सिद्धिदात्री", color:"🩵 Sky Blue" },
+"2026-10-02":{ hi:"दशहरा", en:"Dussehra", icon:"🏹", type:"major" },
+"2026-10-09":{ hi:"करवा चौथ", en:"Karva Chauth", icon:"🌙", type:"major" },
+"2026-10-18":{ hi:"धनतेरस", en:"Dhanteras", icon:"💰", type:"major" },
+"2026-10-20":{ hi:"दीपावली", en:"Diwali", icon:"🪔", desc:"रोशनी का महापर्व!", type:"major" },
+"2026-10-21":{ hi:"गोवर्धन पूजा", en:"Govardhan Puja", icon:"🐄", type:"major" },
+"2026-10-22":{ hi:"भाई दूज", en:"Bhai Dooj", icon:"👫", type:"major" },
+"2026-11-24":{ hi:"कार्तिक पूर्णिमा", en:"Kartik Purnima", icon:"✨", type:"major" },
+"2027-01-14":{ hi:"मकर संक्रांति", en:"Makar Sankranti", icon:"🌞", type:"major" },
+"2027-02-11":{ hi:"वसंत पंचमी", en:"Vasant Panchami", icon:"🌼", type:"major" },
+"2027-03-06":{ hi:"महाशिवरात्रि", en:"Maha Shivratri", icon:"🔱", type:"major" },
+"2027-03-21":{ hi:"होलिका दहन", en:"Holika Dahan", icon:"🔥", type:"major" },
+"2027-03-22":{ hi:"होली", en:"Holi", icon:"🎨", type:"major" }
+};
+
+function getFestival(y, m, d) {
+  return FESTIVALS[y+'-'+pad2(m+1)+'-'+pad2(d)] || null;
+}
+
+// ══════════════════════════════════════
+// PANCHANG MATH
+// ══════════════════════════════════════
+var HINDI_MONTHS = ['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
+var EN_MONTHS    = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+var TITHI_HI = ['प्रतिपदा','द्वितीया','तृतीया','चतुर्थी','पञ्चमी','षष्ठी','सप्तमी','अष्टमी','नवमी','दशमी','एकादशी','द्वादशी','त्रयोदशी','चतुर्दशी','पूर्णिमा'];
+var TITHI_HI_K = ['प्रतिपदा','द्वितीया','तृतीया','चतुर्थी','पञ्चमी','षष्ठी','सप्तमी','अष्टमी','नवमी','दशमी','एकादशी','द्वादशी','त्रयोदशी','चतुर्दशी','अमावस्या'];
+var TITHI_EN = ['Pratipada','Dwitiya','Tritiya','Chaturthi','Panchami','Shashthi','Saptami','Ashtami','Navami','Dashami','Ekadashi','Dwadashi','Trayodashi','Chaturdashi','Purnima'];
+var TITHI_EN_K = ['Pratipada','Dwitiya','Tritiya','Chaturthi','Panchami','Shashthi','Saptami','Ashtami','Navami','Dashami','Ekadashi','Dwadashi','Trayodashi','Chaturdashi','Amavasya'];
+var NAK_HI = ['अश्विनी','भरणी','कृत्तिका','रोहिणी','मृगशिरा','आर्द्रा','पुनर्वसु','पुष्य','आश्लेषा','मघा','पूर्वाफाल्गुनी','उत्तराफाल्गुनी','हस्त','चित्रा','स्वाति','विशाखा','अनुराधा','ज्येष्ठा','मूल','पूर्वाषाढा','उत्तराषाढा','श्रवण','धनिष्ठा','शतभिषा','पूर्वाभाद्रपद','उत्तराभाद्रपद','रेवती'];
+var NAK_EN = ['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishtha','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
+var YOGA_HI = ['विष्कुम्भ','प्रीति','आयुष्मान','सौभाग्य','शोभन','अतिगण्ड','सुकर्मा','धृति','शूल','गण्ड','वृद्धि','ध्रुव','व्याघात','हर्षण','वज्र','सिद्धि','व्यतीपात','वरीयान','परिघ','शिव','सिद्ध','साध्य','शुभ','शुक्ल','ब्रह्म','इन्द्र','वैधृति'];
+var KAR_HI = ['बव','बालव','कौलव','तैतिल','गर','वणिज','विष्टि'];
+var RAHU = [[16,30],[7,30],[15,0],[12,0],[13,30],[9,0],[10,30]];
+var HINDU_M = ['चैत्र','वैशाख','ज्येष्ठ','आषाढ','श्रावण','भाद्रपद','आश्विन','कार्तिक','मार्गशीर्ष','पौष','माघ','फाल्गुन'];
+var HINDU_M_IDX = [10,11,0,1,2,3,4,5,6,7,8,9];
+
+function jd(y, m, d) {
+  if (m <= 2) { y--; m += 12; }
+  var A = Math.floor(y/100), B = 2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5;
+}
+
+function getMoonAngle(y, m, d) {
+  var j = jd(y, m+1, d), T = (j-2451545)/36525;
+  return ((297.85036 + 445267.11148*T) % 360 + 360) % 360;
+}
+
+function getTithi(y, m, d) {
+  var D = getMoonAngle(y, m, d);
+  var n = Math.floor(D/12) % 30;
+  var k = n >= 15;
+  var p = n % 15;
+  var idx = Math.min(p, 14);
+  return {
+    n: n, p: p, idx: idx,
+    isAma: n===29, isPur: n===14,
+    nameHi: k ? TITHI_HI_K[idx] : TITHI_HI[idx],
+    nameEn: k ? TITHI_EN_K[idx] : TITHI_EN[idx],
+    paksha: k ? 'कृष्ण पक्ष' : 'शुक्ल पक्ष',
+    pakshaEn: k ? 'Krishna Paksha' : 'Shukla Paksha',
+    pakshaSh: k ? 'कृ.' : 'शु.'
+  };
+}
+
+// Tithi end time: next tithi starts when moon angle crosses next 12° boundary
+function getTithiEndTime(y, m, d) {
+  var D0 = getMoonAngle(y, m, d);
+  var nextBoundary = (Math.floor(D0/12) + 1) * 12;
+  // Moon moves ~12.19°/day; approximate time of crossing
+  var j0 = jd(y, m+1, d);
+  var T0 = (j0-2451545)/36525;
+  // Moon speed approx
+  var moonSpeed = 13.176; // degrees per day
+  var hoursToNext = ((nextBoundary - D0 + 360) % 360) / moonSpeed * 24;
+  if (hoursToNext > 24) hoursToNext = hoursToNext % 24;
+  var h = Math.floor(hoursToNext);
+  var mn = Math.round((hoursToNext - h) * 60);
+  if (mn === 60) { h++; mn = 0; }
+  if (h >= 24) h -= 24;
+  return pad2(h) + ':' + pad2(mn);
+}
+
+function getNakshatra(y, m, d) {
+  var j = jd(y, m+1, d), T = (j-2451545)/36525;
+  return Math.floor(((218.3165+481267.8813*T)%360+360)%360 / (360/27)) % 27;
+}
+
+function getNakshatraEndTime(y, m, d) {
+  var j0 = jd(y, m+1, d), T0 = (j0-2451545)/36525;
+  var moonLon = ((218.3165+481267.8813*T0)%360+360)%360;
+  var nakSize = 360/27;
+  var nextBoundary = (Math.floor(moonLon/nakSize) + 1) * nakSize;
+  var moonSpeed = 13.176;
+  var hoursToNext = ((nextBoundary - moonLon + 360) % 360) / moonSpeed * 24;
+  if (hoursToNext > 24) hoursToNext = hoursToNext % 24;
+  var h = Math.floor(hoursToNext);
+  var mn = Math.round((hoursToNext - h) * 60);
+  if (mn === 60) { h++; mn = 0; }
+  if (h >= 24) h -= 24;
+  return pad2(h) + ':' + pad2(mn);
+}
+
+function getYoga(y, m, d) {
+  var j = jd(y, m+1, d), T = (j-2451545)/36525;
+  var s = ((280.46646+36000.76983*T)%360+360)%360;
+  var mn = ((218.3165+481267.8813*T)%360+360)%360;
+  return Math.floor(((s+mn)%360)/(360/27)) % 27;
+}
+
+function getKarana(y, m, d) { return getTithi(y,m,d).p % 7; }
+
+function getSun(y, m, d) {
+  var doy = getDOY(y, m, d);
+  var b = (360/365)*(doy-81)*Math.PI/180;
+  var eq = 9.87*Math.sin(2*b) - 7.53*Math.cos(b) - 1.5*Math.sin(b);
+  var lat = 28.6*Math.PI/180; // Delhi/NCR latitude
+  var decl = Math.asin(0.39795*Math.cos(0.98563*(doy-173)*Math.PI/180));
+  var cosHa = -Math.tan(lat)*Math.tan(decl);
+  cosHa = cosHa < -1 ? -1 : cosHa > 1 ? 1 : cosHa;
+  var ha = Math.acos(cosHa)*180/Math.PI;
+  var noon = 12 - eq/60 - (77.2-82.5)/15; // Gurugram longitude correction
+  return { rise: noon - ha/15, set: noon + ha/15 };
+}
+
+function ft(dec) {
+  if (isNaN(dec) || dec === null) return '--:--';
+  var h = Math.floor(dec), mn = Math.round((dec-h)*60);
+  if (mn===60) { h++; mn=0; }
+  if (h>=24) h-=24; if (h<0) h+=24;
+  var ap = h>=12?'PM':'AM', h12 = h>12?h-12:(h===0?12:h);
+  return h12+':'+(mn<10?'0':'')+mn+' '+ap;
+}
+
+function ft24(dec) {
+  if (isNaN(dec) || dec === null) return '--:--';
+  var h = Math.floor(dec), mn = Math.round((dec-h)*60);
+  if (mn===60){h++;mn=0;} if(h>=24)h-=24; if(h<0)h+=24;
+  return pad2(h)+':'+pad2(mn);
+}
+
+function getHMonth(m) { return HINDU_M[HINDU_M_IDX[m]]; }
+function getVS(y, m) { return m >= 3 ? y+56 : y+55; }
+function getShaka(y, m) { return m >= 3 ? y-78 : y-79; }
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+var todayRaw = new Date();
+var TY = todayRaw.getFullYear();
+var TM = todayRaw.getMonth();
+var TD = todayRaw.getDate();
+var viewY = TY, viewM = TM;
+var selY = TY, selM = TM, selD = TD;
+
+// ══════════════════════════════════════
+// RENDER CALENDAR
+// ══════════════════════════════════════
+function renderCalendar() {
+  document.getElementById('monthHindi').textContent = HINDI_MONTHS[viewM]+' '+viewY;
+  document.getElementById('monthEnglish').textContent = EN_MONTHS[viewM]+' '+viewY;
+
+  var first = firstDayOfMonth(viewY, viewM);
+  var dim = daysInMonth(viewY, viewM);
+  var html = '';
+
+  for (var i=0; i<first; i++) {
+    html += '<div class="day-cell empty"></div>';
+  }
+
+  for (var d=1; d<=dim; d++) {
+    var dow = (first+d-1) % 7;
+    var t = getTithi(viewY, viewM, d);
+    var nak = getNakshatra(viewY, viewM, d);
+    var sun = getSun(viewY, viewM, d);
+    var fest = getFestival(viewY, viewM, d);
+    var tEnd = getTithiEndTime(viewY, viewM, d);
+    var isT = (viewY===TY && viewM===TM && d===TD);
+    var isSel = (viewY===selY && viewM===selM && d===selD);
+
+    var cls = 'day-cell';
+    if (dow===0) cls += ' sunday';
+    if (isT) cls += ' today';
+    if (isSel) cls += ' selected';
+    if (fest) cls += fest.type==='navratri' ? ' navratri-day' : ' festival-day';
+    if (t.isAma) cls += ' amavasya-day';
+    if (t.isPur) cls += ' purnima-day';
+
+    // Short tithi name for cell
+    var tshort = t.isAma ? 'अमा.' : (t.isPur ? 'पूर्णि.' : (t.nameHi.length>5 ? t.nameHi.substring(0,5) : t.nameHi));
+    var nakshort = NAK_HI[nak].length > 6 ? NAK_HI[nak].substring(0,6) : NAK_HI[nak];
+    var sunStr = ft24(sun.rise);
+
+    var festHtml = '';
+    if (fest) {
+      var fname = fest.hi.length > 10 ? fest.hi.substring(0,10)+'.' : fest.hi;
+      var fcls = fest.type==='navratri' ? 'navratri-fest' : 'major';
+      festHtml = '<div class="cell-fest '+fcls+'">'+fest.icon+' '+fname+'</div>';
+    }
+
+    html += '<div class="'+cls+'" onclick="selectDate('+viewY+','+viewM+','+d+')">'
+      + '<div class="cell-date">'+d+'</div>'
+      + '<div class="cell-tithi">'+t.pakshaSh+' '+tshort+'<br><span class="cell-tithi-time">'+tEnd+' तक</span></div>'
+      + '<div class="cell-nak">'+nakshort+'</div>'
+      + '<div class="cell-sunrise">🌅'+sunStr+'</div>'
+      + festHtml
+      + '</div>';
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+  updateSamvatBar();
+}
+
+function updateSamvatBar() {
+  var vs = getVS(viewY, viewM);
+  var sk = getShaka(viewY, viewM);
+  var hm = getHMonth(viewM);
+  var t = getTithi(viewY, viewM, 15);
+  document.getElementById('svVikram').textContent = vs;
+  document.getElementById('svShaka').textContent = sk;
+  document.getElementById('svMas').textContent = hm;
+  document.getElementById('svPaksha').textContent = t.paksha.split(' ')[0];
+}
+
+function selectDate(y, m, d) {
+  selY=y; selM=m; selD=d;
+  renderCalendar();
+  renderDetail();
+  var el = document.getElementById('detailCard');
+  if (el) { el.scrollIntoView(); }
+}
+
+function goToToday() {
+  viewY=TY; viewM=TM; selY=TY; selM=TM; selD=TD;
+  renderCalendar(); renderDetail();
+  var el = document.getElementById('detailCard');
+  if (el) el.scrollIntoView();
+}
+
+function changeMonth(dir) {
+  viewM += dir;
+  if (viewM>11) { viewM=0; viewY++; }
+  if (viewM<0)  { viewM=11; viewY--; }
+  renderCalendar();
+}
+
+// ══════════════════════════════════════
+// RENDER DETAIL
+// ══════════════════════════════════════
+function renderDetail() {
+  var y=selY, m=selM, d=selD;
+  var t = getTithi(y,m,d);
+  var nak = getNakshatra(y,m,d);
+  var yog = getYoga(y,m,d);
+  var kar = getKarana(y,m,d);
+  var sun = getSun(y,m,d);
+  var fest = getFestival(y,m,d);
+  var vs = getVS(y,m), hm = getHMonth(m);
+  var tEnd = getTithiEndTime(y,m,d);
+  var nEnd = getNakshatraEndTime(y,m,d);
+  var isT = (y===TY && m===TM && d===TD);
+  var dow = (firstDayOfMonth(y,m)+d-1)%7;
+  var DN = ['रविवार','सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+  var DE = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  var html = '<div class="detail-header">'
+    +'<div class="dh-left">'
+    +'<span class="dh-date-hi">'+DN[dow]+', '+d+' '+HINDI_MONTHS[m]+' '+y+'</span>'
+    +'<span class="dh-date-en">'+DE[dow]+', '+d+' '+(EN_MONTHS[m].charAt(0)+EN_MONTHS[m].slice(1).toLowerCase())+' '+y+'</span>'
+    +'</div>'
+    +(isT ? '<div class="dh-today-badge">TODAY</div>' : '')
+    +'</div>';
+
+  // Festival block
+  if (fest) {
+    if (fest.type==='navratri') {
+      html += '<div class="fest-block navratri-block">'
+        +'<span class="fest-icon-big">'+fest.icon+'</span>'
+        +'<div class="fest-title-hi">🌸 नवरात्रि — दिन '+fest.navratriDay+'</div>'
+        +'<span class="fest-title-en">NAVRATRI DAY '+fest.navratriDay+'</span>'
+        +'<span class="fest-devi">🙏 '+fest.devi+'</span>'
+        +'<span class="fest-color-tag">आज का रंग: '+fest.color+'</span>'
+        +(fest.desc ? '<div class="fest-desc">'+fest.desc+'</div>' : '')
+        +'</div>';
+    } else {
+      html += '<div class="fest-block major-fest">'
+        +'<span class="fest-icon-big">'+fest.icon+'</span>'
+        +'<div class="fest-title-hi">'+fest.hi+'</div>'
+        +'<span class="fest-title-en">'+fest.en+'</span>'
+        +(fest.desc ? '<div class="fest-desc">'+fest.desc+'</div>' : '')
+        +'</div>';
+    }
+  }
+
+  // Amavasya/Purnima alert
+  html += '<div class="ama-alert '+(t.isAma?'yes':'no')+'">'
+    +'<div class="ama-icon">'+(t.isAma?'🌑':(t.isPur?'🌕':'🌙'))+'</div>'
+    +'<div>'
+    +'<div class="ama-hi">'+(t.isAma?'✅ आज अमावस्या है!':(t.isPur?'✅ आज पूर्णिमा है!':'❌ आज अमावस्या नहीं'))+'</div>'
+    +'<div class="ama-en">'+(t.isAma?'Yes, today is Amavasya':(t.isPur?'Today is Purnima':'Not Amavasya today'))+'</div>'
+    +'</div></div>';
+
+  // Main panchang grid
+  html += '<div class="detail-panch">'
+
+    +'<div class="panch-box highlight">'
+    +'<span class="pb-label-en">TITHI</span>'
+    +'<span class="pb-label-hi">तिथि</span>'
+    +'<span class="pb-value-hi">'+(t.isAma?'अमावस्या':(t.isPur?'पूर्णिमा':t.nameHi))+'</span>'
+    +'<span class="pb-value-sub">'+t.paksha+'</span>'
+    +'<span class="pb-time">'+tEnd+' तक</span>'
+    +'</div>'
+
+    +'<div class="panch-box highlight">'
+    +'<span class="pb-label-en">NAKSHATRA</span>'
+    +'<span class="pb-label-hi">नक्षत्र</span>'
+    +'<span class="pb-value-hi">'+NAK_HI[nak]+'</span>'
+    +'<span class="pb-value-sub">'+NAK_EN[nak]+'</span>'
+    +'<span class="pb-time">'+nEnd+' तक</span>'
+    +'</div>'
+
+    +'<div class="panch-box">'
+    +'<span class="pb-label-en">YOGA</span>'
+    +'<span class="pb-label-hi">योग</span>'
+    +'<span class="pb-value-hi">'+YOGA_HI[yog]+'</span>'
+    +'<span class="pb-value-sub">Yoga '+(yog+1)+' of 27</span>'
+    +'</div>'
+
+    +'<div class="panch-box">'
+    +'<span class="pb-label-en">KARANA</span>'
+    +'<span class="pb-label-hi">करण</span>'
+    +'<span class="pb-value-hi">'+KAR_HI[kar]+'</span>'
+    +'<span class="pb-value-sub">Karana</span>'
+    +'</div>'
+
+    +'<div class="panch-box full">'
+    +'<span class="pb-label-en">VIKRAM SAMVAT / SHAKA</span>'
+    +'<span class="pb-label-hi">विक्रम संवत / शक</span>'
+    +'<span class="pb-value-hi">वि.सं. '+vs+' · शक '+(getShaka(y,m))+'</span>'
+    +'<span class="pb-value-sub">'+hm+' मास · '+t.paksha+'</span>'
+    +'</div>'
+
+    +'</div>';
+
+  // Sun times
+  html += '<div class="sun-row">'
+    +'<div class="sun-box rise"><span class="sun-icon">🌅</span><span class="sun-lbl">सूर्योदय / Sunrise</span><span class="sun-time">'+ft(sun.rise)+'</span></div>'
+    +'<div class="sun-box set"><span class="sun-icon">🌇</span><span class="sun-lbl">सूर्यास्त / Sunset</span><span class="sun-time">'+ft(sun.set)+'</span></div>'
+    +'</div>';
+
+  // Muhurat
+  var muhs = [
+    {hi:'अभिजित मुहूर्त', en:'Abhijit Muhurat', s:11.75, dur:0.8},
+    {hi:'विजय मुहूर्त',   en:'Vijay Muhurat',   s:14.5,  dur:0.8},
+    {hi:'प्रातःकाल',      en:'Pratahkala',       s:6,     dur:1.6}
+  ];
+  html += '<div class="muh-section"><div class="muh-title">🟢 शुभ मुहूर्त</div><div class="muh-card">';
+  for (var i=0; i<muhs.length; i++) {
+    html += '<div class="muh-row"><div><div class="muh-name-hi">'+muhs[i].hi+'</div><div class="muh-name-en">'+muhs[i].en+'</div></div>'
+      +'<div class="muh-time">'+ft(muhs[i].s)+' – '+ft(muhs[i].s+muhs[i].dur)+'</div></div>';
+  }
+  html += '</div></div>';
+
+  // Inauspicious
+  var rs = RAHU[dow][0] + RAHU[dow][1]/60;
+  var inaus = [
+    {hi:'राहुकाल',    s:rs,           e:rs+1.5},
+    {hi:'यमगण्ड',    s:sun.rise+1.5, e:sun.rise+3},
+    {hi:'गुलिककाल',  s:sun.rise+4.5, e:sun.rise+6}
+  ];
+  html += '<div class="inaus-section"><div class="inaus-title">🔴 अशुभ काल</div><div class="inaus-card">';
+  for (var j=0; j<inaus.length; j++) {
+    html += '<div class="inaus-row"><div class="inaus-name">'+inaus[j].hi+'</div><div class="inaus-time">'+ft(inaus[j].s)+' – '+ft(inaus[j].e)+'</div></div>';
+  }
+  html += '</div></div>';
+
+  document.getElementById('detailCard').innerHTML = html;
+}
+
+// ══════════════════════════════════════
+// TODAY BANNER
+// ══════════════════════════════════════
+function renderTodayBanner() {
+  var t = getTithi(TY, TM, TD);
+  var tn = t.isAma ? 'अमावस्या 🌑' : (t.isPur ? 'पूर्णिमा 🌕' : t.nameHi);
+  var dn = ['रवि','सोम','मंगल','बुध','गुरु','शुक्र','शनि'][todayRaw.getDay()];
+  document.getElementById('todayBanner').textContent = 'आज: '+dn+'वार, '+TD+' '+HINDI_MONTHS[TM]+' '+TY+' · '+tn;
+  var fest = getFestival(TY, TM, TD);
+  if (fest) {
+    var fb = document.getElementById('festivalBanner');
+    fb.style.display = 'block';
+    fb.innerHTML = fest.icon+' <b>आज:</b> '+fest.hi+'  |  '+fest.en;
+  }
+}
+
+// ══════════════════════════════════════
+// PWA
+// ══════════════════════════════════════
+function initPWA() {
+  var isStandalone = window.navigator.standalone === true;
+  var ua = navigator.userAgent || '';
+  var isSafari = ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('CriOS') === -1;
+  if (!isStandalone && isSafari) {
+    setTimeout(function() {
+      document.getElementById('pwaBar').classList.add('show');
+    }, 3000);
+  }
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+function init() {
+  try { renderTodayBanner(); } catch(e) {}
+  try { renderCalendar(); } catch(e) {}
+  try { renderDetail(); } catch(e) {}
+  try { initPWA(); } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', init);
+window.onload = init;
+</script>
+</body>
+</html>
